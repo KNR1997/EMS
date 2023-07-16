@@ -7,7 +7,6 @@ import java.util.Scanner;
 @SpringBootApplication
 public class DemoApplication {
 
-    EmployeeService service = new EmployeeService();
     static boolean ordering = true;
 
     public static void menu() {
@@ -22,17 +21,35 @@ public class DemoApplication {
     }
 
     public static void main(String[] args) {
+
         Scanner scanner = new Scanner(System.in);
+        EmployeeService employeeService = new EmployeeService();
+
         do {
             menu();
             System.out.println("Enter your Choice");
             int choice = scanner.nextInt();
             switch (choice) {
-                case 1 -> System.out.println("Add Employee");
-                case 2 -> System.out.println("View Employee");
-                case 3 -> System.out.println("Update Employee");
-                case 4 -> System.out.println("Delete Employee");
-                case 5 -> System.out.println("View All Employee");
+                case 1 -> {
+                    System.out.println("Add Employee");
+                    employeeService.addEmployee();
+                }
+                case 2 -> {
+                    System.out.println("View Employee");
+                    employeeService.viewEmployee();
+                }
+                case 3 -> {
+                    System.out.println("Update Employee");
+                    employeeService.updateEmployee();
+                }
+                case 4 -> {
+                    System.out.println("Delete Employee");
+                    employeeService.deleteEmployee();
+                }
+                case 5 -> {
+                    System.out.println("View All Employee");
+                    employeeService.viewAllEmployees();
+                }
                 case 6 -> {
                     System.out.println("Thank you for using Application");
                     System.exit(0);
