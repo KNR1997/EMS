@@ -25,6 +25,8 @@ public class DemoApplication {
         Scanner scanner = new Scanner(System.in);
         EmployeeService employeeService = new EmployeeService();
 
+        ExcelHandler excelWriter = new ExcelHandler();
+
         do {
             menu();
             System.out.println("Enter your Choice");
@@ -49,6 +51,7 @@ public class DemoApplication {
                 case 5 -> {
                     System.out.println("View All Employee");
                     employeeService.viewAllEmployees();
+                    excelWriter.writeExcel();
                 }
                 case 6 -> {
                     System.out.println("Thank you for using Application");
