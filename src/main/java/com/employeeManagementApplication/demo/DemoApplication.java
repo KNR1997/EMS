@@ -34,7 +34,8 @@ public class DemoApplication {
             switch (choice) {
                 case 1 -> {
                     System.out.println("Add Employee");
-                    employeeService.addEmployee();
+                    Employee newEmployee = employeeService.addEmployee();
+                    excelWriter.writeExcel(newEmployee);
                 }
                 case 2 -> {
                     System.out.println("View Employee");
@@ -51,7 +52,6 @@ public class DemoApplication {
                 case 5 -> {
                     System.out.println("View All Employee");
                     employeeService.viewAllEmployees();
-                    excelWriter.writeExcel();
                 }
                 case 6 -> {
                     System.out.println("Thank you for using Application");

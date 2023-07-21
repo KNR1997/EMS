@@ -101,7 +101,7 @@ public class EmployeeService {
     }
 
     //Add employee
-    public void addEmployee() {
+    public Employee addEmployee() {
         System.out.println("Enter id: ");
         id = scanner.nextInt();
         System.out.println("Enter name: ");
@@ -119,5 +119,6 @@ public class EmployeeService {
         employeeSet.add(newEmployee);
         System.out.println(newEmployee);
         System.out.println("Employee added successfully");
+        return newEmployee;
     }
 }
