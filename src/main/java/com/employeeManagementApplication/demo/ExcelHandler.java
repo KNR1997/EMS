@@ -7,7 +7,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @NoArgsConstructor
@@ -29,22 +28,21 @@ public class ExcelHandler {
 
                     // Iterate over all cells in the row
                     for (Cell cell : row) {
-                        // Check the cell type and retrieve the cell value accordingly
-                        switch (cell.getCellType()) {
-                            case STRING:
-                                stringArray[cell.getColumnIndex()] = cell.getStringCellValue();
-                                break;
-                            case NUMERIC:
-                                stringArray[cell.getColumnIndex()] = Integer.toString((int) cell.getNumericCellValue());
-                                break;
-                            case BOOLEAN:
-                                System.out.print(cell.getBooleanCellValue() + "\t");
-                                break;
-                            case BLANK:
-                                System.out.print("BLANK\t");
-                                break;
-                            default:
-                                System.out.print("UNKNOWN\t");
+                        // Check if the cell is null or blank (empty)
+                        if (cell == null || cell.getCellType() == CellType.BLANK || cell.toString() == "") {
+                            stringArray[cell.getColumnIndex()] = "_";
+                        } else {
+                            // Check the cell type and retrieve the cell value accordingly
+                            switch (cell.getCellType()) {
+                                case STRING -> stringArray[cell.getColumnIndex()] = cell.getStringCellValue();
+                                case NUMERIC ->
+                                        stringArray[cell.getColumnIndex()] = Integer.toString((int) cell.getNumericCellValue());
+                                case BOOLEAN -> {
+                                    System.out.print(cell.getBooleanCellValue() + "\t");
+                                    stringArray[cell.getColumnIndex()] = String.valueOf(cell.getBooleanCellValue());
+                                }
+                                default -> stringArray[cell.getColumnIndex()] = "@#$%";
+                            }
                         }
                     }
                     data.add(stringArray);
