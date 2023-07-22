@@ -32,11 +32,11 @@ public class EmployeeService {
     }
 
     //View All employees
-    public void viewAllEmployees() {
-        for (Employee employee : employeeSet) {
-            System.out.println(employee);
-        }
-    }
+//    public void viewAllEmployees() {
+//        for (Employee employee : employeeSet) {
+//            System.out.println(employee);
+//        }
+//    }
 
     //View Employee based on ID
     public void viewEmployee() {

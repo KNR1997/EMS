@@ -6,6 +6,9 @@ import org.apache.poi.ss.usermodel.*;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @NoArgsConstructor
 public class ExcelHandler {
@@ -16,12 +19,40 @@ public class ExcelHandler {
              Workbook workbook = WorkbookFactory.create(file)) {
 
             Sheet sheet = workbook.getSheetAt(0);
-            for (Row row : sheet) {
-                for (Cell cell : row) {
-                    System.out.print(cell.toString() + "\t");
+            List<String[]> data = new ArrayList<>();
+            data.add(new String[]{"ID", "Name", "Age", "Designation", "Department", "Salary"});
+
+            for (int rowIndex = 1; rowIndex <= sheet.getLastRowNum(); rowIndex++) {
+                Row row = sheet.getRow(rowIndex);
+                if (row != null) {
+                    String[] stringArray = new String[6];
+
+                    // Iterate over all cells in the row
+                    for (Cell cell : row) {
+                        // Check the cell type and retrieve the cell value accordingly
+                        switch (cell.getCellType()) {
+                            case STRING:
+                                stringArray[cell.getColumnIndex()] = cell.getStringCellValue();
+                                break;
+                            case NUMERIC:
+                                stringArray[cell.getColumnIndex()] = Integer.toString((int) cell.getNumericCellValue());
+                                break;
+                            case BOOLEAN:
+                                System.out.print(cell.getBooleanCellValue() + "\t");
+                                break;
+                            case BLANK:
+                                System.out.print("BLANK\t");
+                                break;
+                            default:
+                                System.out.print("UNKNOWN\t");
+                        }
+                    }
+                    data.add(stringArray);
                 }
-                System.out.println();
             }
+
+            //Print the Table
+            printTable(data);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -67,5 +98,49 @@ public class ExcelHandler {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private static void printTable(List<String[]> data) {
+        int[] maxLengths = new int[data.get(0).length];
+
+        // Calculate the maximum length for each column
+        for (String[] row : data) {
+            for (int i = 0; i < row.length; i++) {
+                maxLengths[i] = Math.max(maxLengths[i], row[i].length());
+            }
+        }
+
+        // Print the table headers
+        for (int i = 0; i < data.get(0).length; i++) {
+            System.out.print(padRight(data.get(0)[i], maxLengths[i]) + " | ");
+        }
+        System.out.println();
+
+        // Print the table separator
+        for (int i = 0; i < data.get(0).length; i++) {
+            System.out.print(padRight("", maxLengths[i], '-') + " | ");
+        }
+        System.out.println();
+
+        // Print the table rows
+        for (int rowIndex = 1; rowIndex < data.size(); rowIndex++) {
+            String[] row = data.get(rowIndex);
+            for (int i = 0; i < row.length; i++) {
+                System.out.print(padRight(row[i], maxLengths[i]) + " | ");
+            }
+            System.out.println();
+        }
+    }
+
+    private static String padRight(String str, int length) {
+        return padRight(str, length, ' ');
+    }
+
+    private static String padRight(String str, int length, char paddingChar) {
+        StringBuilder paddedStr = new StringBuilder(str);
+        while (paddedStr.length() < length) {
+            paddedStr.append(paddingChar);
+        }
+        return paddedStr.toString();
     }
 }
