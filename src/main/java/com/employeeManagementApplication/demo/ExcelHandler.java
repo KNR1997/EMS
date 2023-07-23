@@ -189,4 +189,52 @@ public class ExcelHandler {
             e.printStackTrace();
         }
     }
+
+    public void deleteEmployee(int employeeID) {
+        try (FileInputStream file = new FileInputStream(filePath);
+             Workbook workbook = WorkbookFactory.create(file)) {
+
+            Sheet sheet = workbook.getSheetAt(0); // Assuming you want to delete from the first sheet (index 0)
+
+            // Find the row index that contains the target ID
+            int rowIndexToDelete = -1;
+            for (int rowIndex = 1; rowIndex <= sheet.getLastRowNum(); rowIndex++) {
+                Row row = sheet.getRow(rowIndex);
+                if (row != null) {
+                    Cell cellID = row.getCell(0);
+                    if (cellID != null && cellID.getCellType() == CellType.NUMERIC && cellID.getNumericCellValue() == employeeID) {
+                        rowIndexToDelete = rowIndex;
+                        break; // Assuming the ID is unique, break the loop when the target ID is found
+                    }
+                }
+            }
+
+            if (rowIndexToDelete != -1) {
+                // If the target ID is found, delete the row by shifting rows above it downwards
+                sheet.shiftRows(rowIndexToDelete + 1, sheet.getLastRowNum(), -1);
+
+                // Update the last row index
+                int lastRowIndex = sheet.getLastRowNum();
+                if (lastRowIndex >= 0) {
+                    Row lastRow = sheet.getRow(lastRowIndex);
+                    if (lastRow != null) {
+                        // Clear the contents of the last row to avoid duplicates when writing back to the Excel file
+                        sheet.removeRow(lastRow);
+                    }
+                }
+
+                // Write the changes back to the Excel file
+                try (FileOutputStream fileOut = new FileOutputStream(filePath)) {
+                    workbook.write(fileOut);
+                }
+
+                System.out.println("Row with ID " + employeeID + " has been deleted successfully.");
+            } else {
+                System.out.println("ID " + employeeID + " not found in the Excel file.");
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

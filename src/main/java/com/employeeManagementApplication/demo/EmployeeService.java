@@ -77,25 +77,11 @@ public class EmployeeService {
     public void deleteEmployee() {
         System.out.println("Enter Id: ");
         id = scanner.nextInt();
-        boolean found = false;
-        Employee empDelete = null;
-        for (Employee employee : employeeSet) {
-            if (employee.getId() == id) {
-                empDelete = employee;
-                found = true;
-            }
-        }
-        if (!found) {
-            System.out.println("Employee is not present");
-        }
-        else {
-            employeeSet.remove(empDelete);
-            System.out.println("Employee deleted successfully");
-        }
+        excelHandler.deleteEmployee(id);
     }
 
     //Add employee
-    public Employee addEmployee() {
+    public void addEmployee() {
         System.out.println("Enter id: ");
         id = scanner.nextInt();
         System.out.println("Enter name: ");
@@ -110,9 +96,8 @@ public class EmployeeService {
         salary = scanner.nextDouble();
 
         Employee newEmployee = new Employee(id, name, age, designation, department, salary);
-        employeeSet.add(newEmployee);
         System.out.println(newEmployee);
-        System.out.println("Employee added successfully");
-        return newEmployee;
+
+        excelHandler.writeExcel(newEmployee);
     }
 }
