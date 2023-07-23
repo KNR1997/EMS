@@ -237,4 +237,65 @@ public class ExcelHandler {
             e.printStackTrace();
         }
     }
+
+    public void updateEmployee(int employeeID, Employee updateEmployee) {
+        try (FileInputStream file = new FileInputStream(filePath);
+             Workbook workbook = WorkbookFactory.create(file)) {
+
+            Sheet sheet = workbook.getSheetAt(0); // Assuming you want to update the first sheet (index 0)
+
+            // Find the row index that contains the target ID
+            int rowIndexToUpdate = -1;
+            for (int rowIndex = 1; rowIndex <= sheet.getLastRowNum(); rowIndex++) {
+                Row row = sheet.getRow(rowIndex);
+                if (row != null) {
+                    Cell cellID = row.getCell(0);
+                    if (cellID != null && cellID.getCellType() == CellType.NUMERIC && cellID.getNumericCellValue() == employeeID) {
+                        rowIndexToUpdate = rowIndex;
+                        break; // Assuming the ID is unique, break the loop when the target ID is found
+                    }
+                }
+            }
+
+            if (rowIndexToUpdate != -1) {
+                Row rowToUpdate = sheet.getRow(rowIndexToUpdate);
+                if (rowToUpdate != null) {
+                    // Get the Excel cell values
+                    Cell name = rowToUpdate.getCell(1);
+                    Cell age = rowToUpdate.getCell(2);
+                    Cell designation = rowToUpdate.getCell(3);
+                    Cell department = rowToUpdate.getCell(4);
+                    Cell salary = rowToUpdate.getCell(5);
+
+                    if (name != null && name.getCellType() == CellType.STRING) {
+                        name.setCellValue(updateEmployee.getName()); // Replace "Updated Name" with the new value
+                    }
+                    if (age != null && age.getCellType() == CellType.NUMERIC) {
+                        age.setCellValue(updateEmployee.getAge()); // Replace "Updated Age" with the new value
+                    }
+                    if (designation != null && designation.getCellType() == CellType.STRING) {
+                        designation.setCellValue(updateEmployee.getDesignation()); // Replace "Updated Designation" with the new value
+                    }
+                    if (department != null && department.getCellType() == CellType.STRING) {
+                        department.setCellValue(updateEmployee.getDepartment()); // Replace "Updated Department" with the new value
+                    }
+                    if (salary != null && salary.getCellType() == CellType.NUMERIC) {
+                        salary.setCellValue(updateEmployee.getSalary()); // Replace "Updated Salary" with the new value
+                    }
+
+                    // Write the changes back to the Excel file
+                    try (FileOutputStream fileOut = new FileOutputStream(filePath)) {
+                        workbook.write(fileOut);
+                    }
+
+                    System.out.println("Row with ID " + employeeID + " has been updated successfully.");
+                }
+            } else {
+                System.out.println("ID " + employeeID + " not found in the Excel file.");
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

@@ -51,26 +51,21 @@ public class EmployeeService {
     public void updateEmployee() {
         System.out.println("Enter ID: ");
         id = scanner.nextInt();
-        boolean found = false;
-        for (Employee employee : employeeSet) {
-            if (employee.getId() == id) {
-                System.out.println("Enter name: ");
-                name = scanner.next();
-                System.out.println("Enter new Salary: ");
-                salary = scanner.nextDouble();
-                employee.setName(name);
-                employee.setSalary(salary);
-                System.out.println("Updated Details of Employee: ");
-                System.out.println(employee);
-                found = true;
-            }
-        }
-        if (!found) {
-            System.out.println("Employee with this ID is not present");
-        }
-        else {
-            System.out.println("Employee details updated successfully");
-        }
+
+        System.out.println("Enter name: ");
+        name = scanner.next();
+        System.out.println("Enter age: ");
+        age = scanner.nextInt();
+        System.out.println("Enter Designation: ");
+        designation = scanner.next();
+        System.out.println("Enter Department");
+        department = scanner.next();
+        System.out.println("Enter salary");
+        salary = scanner.nextDouble();
+
+        Employee updateEmployee = new Employee(id, name, age, designation, department, salary);
+        excelHandler.updateEmployee(id, updateEmployee);
+
     }
 
     //Delete Employee
