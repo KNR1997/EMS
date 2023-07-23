@@ -51,8 +51,7 @@ public class DemoApplication {
                 }
                 case 5 -> {
                     System.out.println("View All Employee");
-                    excelWriter.readExcel();
-                    System.out.println();
+                    employeeService.viewAllEmployees();
                 }
                 case 6 -> {
                     System.out.println("Thank you for using Application");

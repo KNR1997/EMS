@@ -141,4 +141,52 @@ public class ExcelHandler {
         }
         return paddedStr.toString();
     }
+
+    public void viewEmployee(int employeeID) {
+        try (FileInputStream file = new FileInputStream(filePath);
+             Workbook workbook = WorkbookFactory.create(file)) {
+
+            Sheet sheet = workbook.getSheetAt(0); // Assuming you want to read from the first sheet (index 0)
+
+            // Iterate over all rows, starting from the second row (index 1)
+            for (int rowIndex = 1; rowIndex <= sheet.getLastRowNum(); rowIndex++) {
+                Row row = sheet.getRow(rowIndex);
+                if (row != null) {
+                    // Get the cell with ID (assuming it's in the first column, index 0)
+                    Cell cellID = row.getCell(0);
+
+                    // Check if the cell is not empty and its value matches the targetID
+                    if (cellID != null && cellID.getCellType() == CellType.NUMERIC && cellID.getNumericCellValue() == employeeID) {
+                        // Get the values from the other cells in the same row (e.g., assuming you have a column for Name in index 1)
+                        Cell cell1 = row.getCell(1);
+                        Cell cell2 = row.getCell(2);
+                        Cell cell3 = row.getCell(3);
+                        Cell cell4 = row.getCell(4);
+                        Cell cell5 = row.getCell(5);
+
+                        List<String[]> data = new ArrayList<>();
+                        String[] stringArray = new String[6];
+
+                        stringArray[0] = Integer.toString((int) cellID.getNumericCellValue());
+                        stringArray[1] = cell1.getStringCellValue();
+                        stringArray[2] = Integer.toString((int) cell2.getNumericCellValue());
+                        stringArray[3] = cell3.getStringCellValue();
+                        stringArray[4] = cell4.getStringCellValue();
+                        stringArray[5] = Integer.toString((int) cell5.getNumericCellValue());
+
+                        // Add Table Header details
+                        data.add(new String[]{"ID", "Name", "Age", "Designation", "Department", "Salary"});
+                        data.add(stringArray);
+                        printTable(data);
+
+                        // Break the loop once the targetID is found (assuming the ID is unique)
+                        break;
+                    }
+                }
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

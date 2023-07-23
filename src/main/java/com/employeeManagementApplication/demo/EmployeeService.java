@@ -5,6 +5,8 @@ import java.util.Scanner;
 
 public class EmployeeService {
 
+    ExcelHandler excelHandler = new ExcelHandler();
+
     HashSet<Employee> employeeSet = new HashSet<>();
 
     Employee employee1 = new Employee(101, "Kethaka", 25, "Developer", "IT", 50000);
@@ -32,25 +34,17 @@ public class EmployeeService {
     }
 
     //View All employees
-//    public void viewAllEmployees() {
-//        for (Employee employee : employeeSet) {
-//            System.out.println(employee);
-//        }
-//    }
+    public void viewAllEmployees() {
+        excelHandler.readExcel();
+        System.out.println();
+    }
 
     //View Employee based on ID
     public void viewEmployee() {
         System.out.println("Enter ID: ");
         id = scanner.nextInt();
-        for (Employee employee : employeeSet) {
-            if (employee.getId() == id) {
-                System.out.println(employee);
-                found = true;
-            }
-        }
-        if (!found) {
-            System.out.println("Employee with this ID is not present");
-        }
+        excelHandler.viewEmployee(id);
+        System.out.println();
     }
 
     //Update Employee
