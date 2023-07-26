@@ -19,7 +19,7 @@ public class DemoApplication {
                 3. Update Employee\s
                 4. Delete Employee\s
                 5. View All Employee\s
-                6. View All Employees in Department\s
+                6. Get Employees by Department Name\s
                 7. Exist\s""");
     }
 
@@ -27,8 +27,6 @@ public class DemoApplication {
 
         Scanner scanner = new Scanner(System.in);
         EmployeeService employeeService = new EmployeeService();
-
-        ExcelHandlerService excelWriter = new ExcelHandlerService();
 
         do {
             menu();
@@ -57,7 +55,7 @@ public class DemoApplication {
                 }
                 case 6 -> {
                     System.out.println("Choose a Department");
-                    employeeService.searchByDepartment();
+                    employeeService.getEmployeesByDepartment();
                 }
                 case 7 -> {
                     System.out.println("Thank you for using Application");

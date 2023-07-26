@@ -297,27 +297,16 @@ public class ExcelHandlerService {
         }
     }
 
-    private static String getCellValueAsString(Cell cell) {
-        return switch (cell.getCellType()) {
-            case STRING -> cell.getStringCellValue();
-            case NUMERIC -> String.valueOf(cell.getNumericCellValue());
-            case BOOLEAN -> String.valueOf(cell.getBooleanCellValue());
-            case BLANK -> "EMPTY";
-            default -> "UNKNOWN";
-        };
-    }
-
     public void showAllEmployeesByDepartment(String departmentName) {
         int columnIndex = 4; // Replace with the index of the column you want to search (0-based index)
 
         List<String[]> data = new ArrayList<>();
+        data.add(new String[]{"ID", "Name", "Age", "Designation", "Department", "Salary"});
 
         try (FileInputStream file = new FileInputStream(filePath);
              Workbook workbook = WorkbookFactory.create(file)) {
 
             Sheet sheet = workbook.getSheetAt(0); // Assuming you want to read from the first sheet (index 0)
-
-            List<String> dataByParameter = new ArrayList<>();
 
             // Iterate over all rows and get the data from the specific column
             for (Row row : sheet) {
@@ -334,11 +323,20 @@ public class ExcelHandlerService {
                     }
                 }
             }
-            data.add(new String[]{"ID", "Name", "Age", "Designation", "Department", "Salary"});
             printTableService.printTable(data);
 
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private static String getCellValueAsString(Cell cell) {
+        return switch (cell.getCellType()) {
+            case STRING -> cell.getStringCellValue();
+            case NUMERIC -> String.valueOf(cell.getNumericCellValue());
+            case BOOLEAN -> String.valueOf(cell.getBooleanCellValue());
+            case BLANK -> "EMPTY";
+            default -> "UNKNOWN";
+        };
     }
 }

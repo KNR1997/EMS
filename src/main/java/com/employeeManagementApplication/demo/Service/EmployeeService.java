@@ -98,9 +98,11 @@ public class EmployeeService {
         excelHandlerService.writeExcel(newEmployee);
     }
 
-    public void searchByDepartment() {
+    public void getEmployeesByDepartment() {
+        //Show All the distinct Department Names
         excelHandlerService.showAllDepartments();
         System.out.println();
+        //Get user Input
         System.out.println("Enter Department: ");
         department = scanner.next();
         excelHandlerService.showAllEmployeesByDepartment(department);
