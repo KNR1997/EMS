@@ -306,4 +306,39 @@ public class ExcelHandlerService {
             default -> "UNKNOWN";
         };
     }
+
+    public void showAllEmployeesByDepartment(String departmentName) {
+        int columnIndex = 4; // Replace with the index of the column you want to search (0-based index)
+
+        List<String[]> data = new ArrayList<>();
+
+        try (FileInputStream file = new FileInputStream(filePath);
+             Workbook workbook = WorkbookFactory.create(file)) {
+
+            Sheet sheet = workbook.getSheetAt(0); // Assuming you want to read from the first sheet (index 0)
+
+            List<String> dataByParameter = new ArrayList<>();
+
+            // Iterate over all rows and get the data from the specific column
+            for (Row row : sheet) {
+                Cell cell = row.getCell(columnIndex);
+                String[] stringArray = new String[6];
+
+                if (cell != null) {
+                    String cellValue = getCellValueAsString(cell);
+                    if (cellValue.equalsIgnoreCase(departmentName)) {
+                        for (int i = 0; i < row.getLastCellNum(); i++ ){
+                            stringArray[i] = getCellValueAsString(row.getCell(i));
+                        }
+                        data.add(stringArray);
+                    }
+                }
+            }
+            data.add(new String[]{"ID", "Name", "Age", "Designation", "Department", "Salary"});
+            printTableService.printTable(data);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

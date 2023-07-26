@@ -19,7 +19,8 @@ public class DemoApplication {
                 3. Update Employee\s
                 4. Delete Employee\s
                 5. View All Employee\s
-                6. Exist\s""");
+                6. View All Employees in Department\s
+                7. Exist\s""");
     }
 
     public static void main(String[] args) {
@@ -55,12 +56,12 @@ public class DemoApplication {
                     employeeService.viewAllEmployees();
                 }
                 case 6 -> {
-                    System.out.println("Thank you for using Application");
-                    System.exit(0);
+                    System.out.println("Choose a Department");
+                    employeeService.searchByDepartment();
                 }
                 case 7 -> {
-                    System.out.println("Get All Employees in Department");
-                    employeeService.searchByDepartment();
+                    System.out.println("Thank you for using Application");
+                    System.exit(0);
                 }
                 default -> System.out.println("Please Enter valid choice");
             }

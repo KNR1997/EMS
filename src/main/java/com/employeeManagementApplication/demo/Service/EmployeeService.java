@@ -99,9 +99,11 @@ public class EmployeeService {
     }
 
     public void searchByDepartment() {
-        System.out.println("All Departments: ");
         excelHandlerService.showAllDepartments();
+        System.out.println();
         System.out.println("Enter Department: ");
-
+        department = scanner.next();
+        excelHandlerService.showAllEmployeesByDepartment(department);
+        System.out.println();
     }
 }
