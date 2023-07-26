@@ -1,5 +1,7 @@
 package com.employeeManagementApplication.demo;
 
+import com.employeeManagementApplication.demo.Service.EmployeeService;
+import com.employeeManagementApplication.demo.Service.ExcelHandlerService;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.util.Scanner;
@@ -25,7 +27,7 @@ public class DemoApplication {
         Scanner scanner = new Scanner(System.in);
         EmployeeService employeeService = new EmployeeService();
 
-        ExcelHandler excelWriter = new ExcelHandler();
+        ExcelHandlerService excelWriter = new ExcelHandlerService();
 
         do {
             menu();

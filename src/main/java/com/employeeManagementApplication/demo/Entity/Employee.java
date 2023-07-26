@@ -1,4 +1,4 @@
-package com.employeeManagementApplication.demo;
+package com.employeeManagementApplication.demo.Entity;
 
 import lombok.Data;
 

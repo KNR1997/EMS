@@ -1,11 +1,13 @@
-package com.employeeManagementApplication.demo;
+package com.employeeManagementApplication.demo.Service;
+
+import com.employeeManagementApplication.demo.Entity.Employee;
 
 import java.util.HashSet;
 import java.util.Scanner;
 
 public class EmployeeService {
 
-    ExcelHandler excelHandler = new ExcelHandler();
+    ExcelHandlerService excelHandlerService = new ExcelHandlerService();
 
     HashSet<Employee> employeeSet = new HashSet<>();
 
@@ -35,7 +37,7 @@ public class EmployeeService {
 
     //View All employees
     public void viewAllEmployees() {
-        excelHandler.readExcel();
+        excelHandlerService.readExcel();
         System.out.println();
     }
 
@@ -43,7 +45,7 @@ public class EmployeeService {
     public void viewEmployee() {
         System.out.println("Enter ID: ");
         id = scanner.nextInt();
-        excelHandler.viewEmployee(id);
+        excelHandlerService.viewEmployee(id);
         System.out.println();
     }
 
@@ -64,7 +66,7 @@ public class EmployeeService {
         salary = scanner.nextDouble();
 
         Employee updateEmployee = new Employee(id, name, age, designation, department, salary);
-        excelHandler.updateEmployee(id, updateEmployee);
+        excelHandlerService.updateEmployee(id, updateEmployee);
 
     }
 
@@ -72,7 +74,7 @@ public class EmployeeService {
     public void deleteEmployee() {
         System.out.println("Enter Id: ");
         id = scanner.nextInt();
-        excelHandler.deleteEmployee(id);
+        excelHandlerService.deleteEmployee(id);
     }
 
     //Add employee
@@ -93,6 +95,6 @@ public class EmployeeService {
         Employee newEmployee = new Employee(id, name, age, designation, department, salary);
         System.out.println(newEmployee);
 
-        excelHandler.writeExcel(newEmployee);
+        excelHandlerService.writeExcel(newEmployee);
     }
 }
