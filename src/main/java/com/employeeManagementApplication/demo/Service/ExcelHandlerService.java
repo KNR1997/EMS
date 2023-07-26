@@ -8,6 +8,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 @NoArgsConstructor
@@ -259,5 +260,50 @@ public class ExcelHandlerService {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void showAllDepartments() {
+        int columnIndex = 4; // Replace with the index of the column you want to extract (0-based index)
+
+        try (FileInputStream file = new FileInputStream(filePath);
+             Workbook workbook = WorkbookFactory.create(file)) {
+
+            Sheet sheet = workbook.getSheetAt(0); // Assuming you want to read from the first sheet (index 0)
+            List<String[]> data = new ArrayList<>();
+            data.add(new String[]{"Departments"});
+
+            HashSet<String> distinctValues = new HashSet<>();
+
+            // Iterate over all rows and get the data from the specific column
+            for (int rowIndex = 1; rowIndex <= sheet.getLastRowNum(); rowIndex++) {
+                Row row = sheet.getRow(rowIndex);
+                Cell cell = row.getCell(columnIndex);
+                if (cell != null) {
+                    String cellValue = getCellValueAsString(cell);
+                    distinctValues.add(cellValue);
+                }
+            }
+
+            // Print the distinct values
+            for (String value : distinctValues) {
+                String[] stringArray = new String[1];
+                stringArray[0]=value;
+                data.add(stringArray);
+            }
+            printTableService.printTable(data);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static String getCellValueAsString(Cell cell) {
+        return switch (cell.getCellType()) {
+            case STRING -> cell.getStringCellValue();
+            case NUMERIC -> String.valueOf(cell.getNumericCellValue());
+            case BOOLEAN -> String.valueOf(cell.getBooleanCellValue());
+            case BLANK -> "EMPTY";
+            default -> "UNKNOWN";
+        };
     }
 }

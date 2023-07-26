@@ -58,6 +58,10 @@ public class DemoApplication {
                     System.out.println("Thank you for using Application");
                     System.exit(0);
                 }
+                case 7 -> {
+                    System.out.println("Get All Employees in Department");
+                    employeeService.searchByDepartment();
+                }
                 default -> System.out.println("Please Enter valid choice");
             }
 

@@ -97,4 +97,11 @@ public class EmployeeService {
 
         excelHandlerService.writeExcel(newEmployee);
     }
+
+    public void searchByDepartment() {
+        System.out.println("All Departments: ");
+        excelHandlerService.showAllDepartments();
+        System.out.println("Enter Department: ");
+
+    }
 }
