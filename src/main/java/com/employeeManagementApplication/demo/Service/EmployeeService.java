@@ -11,11 +11,6 @@ public class EmployeeService {
 
     HashSet<Employee> employeeSet = new HashSet<>();
 
-    Employee employee1 = new Employee(101, "Kethaka", 25, "Developer", "IT", 50000);
-    Employee employee2 = new Employee(102, "Singhe", 25, "QA", "IT", 60000);
-    Employee employee3 = new Employee(103, "Chethiya", 25, "BA", "IT", 70000);
-    Employee employee4 = new Employee(104, "Sameera", 24, "Developer", "IT", 50000);
-
     Scanner scanner = new Scanner(System.in);
     boolean found = false;
 
@@ -28,16 +23,9 @@ public class EmployeeService {
 
     double salary;
 
-    public EmployeeService() {
-        employeeSet.add(employee1);
-        employeeSet.add(employee2);
-        employeeSet.add(employee3);
-        employeeSet.add(employee4);
-    }
-
     //View All employees
     public void viewAllEmployees() {
-        excelHandlerService.readExcel();
+        excelHandlerService.getAllEmployees();
         System.out.println();
     }
 
@@ -51,9 +39,6 @@ public class EmployeeService {
 
     //Update Employee
     public void updateEmployee() {
-        System.out.println("Enter ID: ");
-        id = scanner.nextInt();
-
         System.out.println("Enter name: ");
         name = scanner.next();
         System.out.println("Enter age: ");
@@ -65,7 +50,7 @@ public class EmployeeService {
         System.out.println("Enter salary");
         salary = scanner.nextDouble();
 
-        Employee updateEmployee = new Employee(id, name, age, designation, department, salary);
+        Employee updateEmployee = new Employee(name, age, designation, department, salary);
         excelHandlerService.updateEmployee(id, updateEmployee);
 
     }
@@ -79,8 +64,6 @@ public class EmployeeService {
 
     //Add employee
     public void addEmployee() {
-        System.out.println("Enter id: ");
-        id = scanner.nextInt();
         System.out.println("Enter name: ");
         name = scanner.next();
         System.out.println("Enter age: ");
@@ -92,10 +75,10 @@ public class EmployeeService {
         System.out.println("Enter salary");
         salary = scanner.nextDouble();
 
-        Employee newEmployee = new Employee(id, name, age, designation, department, salary);
+        Employee newEmployee = new Employee(name, age, designation, department, salary);
         System.out.println(newEmployee);
 
-        excelHandlerService.writeExcel(newEmployee);
+        excelHandlerService.addEmployee(newEmployee);
     }
 
     public void getEmployeesByDepartment() {
@@ -105,6 +88,7 @@ public class EmployeeService {
         //Get user Input
         System.out.println("Enter Department: ");
         department = scanner.next();
+        //Show All the Employees based on the user entered Department name
         excelHandlerService.showAllEmployeesByDepartment(department);
         System.out.println();
     }

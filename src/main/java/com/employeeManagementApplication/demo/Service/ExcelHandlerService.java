@@ -18,7 +18,7 @@ public class ExcelHandlerService {
 
     PrintTableService printTableService = new PrintTableService();
 
-    public void readExcel() {
+    public void getAllEmployees() {
         try (FileInputStream file = new FileInputStream(filePath);
              Workbook workbook = WorkbookFactory.create(file)) {
 
@@ -62,19 +62,20 @@ public class ExcelHandlerService {
         }
     }
 
-    public void writeExcel(Employee newEmployee) {
+    public void addEmployee(Employee newEmployee) {
         try (FileInputStream file = new FileInputStream(filePath);
              Workbook workbook = WorkbookFactory.create(file)) {
 
             Sheet sheet = workbook.getSheetAt(0); // Assuming you want to add to the first sheet (index 0)
             int lastRowNum = sheet.getLastRowNum(); // Get the index of the last row in the sheet
+            double lastEmployeeID = sheet.getRow(lastRowNum).getCell(0).getNumericCellValue(); // Get Last Employee ID in the Excel
 
             // Create a new row at the end of the sheet
             Row newRow = sheet.createRow(lastRowNum + 1);
 
             // Populate the cells in the row with data for the new record
             Cell cell0 = newRow.createCell(0);
-            cell0.setCellValue(newEmployee.getId());
+            cell0.setCellValue(lastEmployeeID + 1);
 
             Cell cell1 = newRow.createCell(1);
             cell1.setCellValue(newEmployee.getName());

@@ -14,7 +14,6 @@ public class Employee {
     @Override
     public String toString() {
         return "Employee{" +
-                "id=" + id +
                 ", name='" + name + '\'' +
                 ", age=" + age +
                 ", designation='" + designation + '\'' +
@@ -22,8 +21,7 @@ public class Employee {
                 ", salary=" + salary +
                 '}';
     }
-    public Employee(int id, String name, int age, String designation, String department, double salary) {
-        this.id = id;
+    public Employee(String name, int age, String designation, String department, double salary) {
         this.name = name;
         this.age = age;
         this.designation = designation;
