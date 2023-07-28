@@ -92,4 +92,20 @@ public class EmployeeService {
         excelHandlerService.showAllEmployeesByDepartment(department);
         System.out.println();
     }
+
+    public void addAttendance() {
+        //Show All the employees first
+        excelHandlerService.getAllEmployees();
+
+        String[] status = {"Present", "Absent"};
+
+        for (String state: status) {
+            System.out.println("Enter the IDs of " + state + " employees: (Like: 100,101,102)");
+            String input = scanner.nextLine();
+
+            // Split the input string using the comma (,) as the delimiter
+            String[] values = input.split(",");
+            excelHandlerService.addAttendance(values, state);
+        }
+    }
 }

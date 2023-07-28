@@ -1,13 +1,17 @@
 package com.employeeManagementApplication.demo.Service;
 
 import com.employeeManagementApplication.demo.Entity.Employee;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.poi.ss.usermodel.*;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
@@ -340,4 +344,98 @@ public class ExcelHandlerService {
             default -> "UNKNOWN";
         };
     }
+
+    public void addAttendance(String[] values, String state) {
+        // Create an integer array of the same length as the string array
+        int[] employeeIDs = new int[values.length];
+        LocalDate today = LocalDate.now();
+
+        // Define a date format pattern
+        String dateFormatPattern = "yyyy-MM-dd";
+
+        // Create a DateTimeFormatter with the given pattern
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(dateFormatPattern);
+
+        // Create a new HashMap to hold the string map
+        HashMap<Integer, String> stringMap = new HashMap<>();
+
+        // Convert each element of the string array to an integer and store in the integer array
+        for (int i = 0; i < values.length; i++) {
+            employeeIDs[i] = Integer.parseInt(values[i]);
+        }
+
+        for (int employeeID: employeeIDs) {
+            String employeeName = getEmployeeNameForID(employeeID);
+            stringMap.put(employeeID, employeeName);
+        }
+
+        for (int employeeID: employeeIDs) {
+
+            try (FileInputStream file = new FileInputStream(filePath);
+                 Workbook workbook = WorkbookFactory.create(file)) {
+
+                Sheet sheet = workbook.getSheetAt(1); // Assuming you want to add to the first sheet (index 0)
+                int lastRowNum = sheet.getLastRowNum(); // Get the index of the last row in the sheet
+
+                // Create a new row at the end of the sheet
+                Row newRow = sheet.createRow(lastRowNum + 1);
+
+                // Populate the cells in the row with data for the new record
+                Cell cell0 = newRow.createCell(0);
+                cell0.setCellValue(employeeID);
+
+                Cell cell1 = newRow.createCell(1);
+                cell1.setCellValue(stringMap.get(employeeID));
+
+                Cell cell2 = newRow.createCell(2);
+                cell2.setCellValue(state);
+
+                Cell cell3 = newRow.createCell(3);
+                cell3.setCellValue(today.format(formatter));
+
+                // Write the changes back to the Excel file
+                try (FileOutputStream fileOut = new FileOutputStream(filePath)) {
+                    workbook.write(fileOut);
+                }
+
+                System.out.println("New record added successfully!");
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private String getEmployeeNameForID(Integer employeeID) {
+        String employeeName = null;
+        try (FileInputStream file = new FileInputStream(filePath);
+             Workbook workbook = WorkbookFactory.create(file)) {
+
+            Sheet sheet = workbook.getSheetAt(0); // Assuming you want to read from the first sheet (index 0)
+
+            // Iterate over all rows, starting from the second row (index 1)
+            for (int rowIndex = 1; rowIndex <= sheet.getLastRowNum(); rowIndex++) {
+                Row row = sheet.getRow(rowIndex);
+                if (row != null) {
+                    // Get the cell with ID (assuming it's in the first column, index 0)
+                    Cell cellID = row.getCell(0);
+
+                    // Check if the cell is not empty and its value matches the targetID
+                    if (cellID != null && cellID.getCellType() == CellType.NUMERIC && cellID.getNumericCellValue() == employeeID) {
+                        // Get the values from the other cells in the same row (e.g., assuming you have a column for Name in index 1)
+                        Cell employeeNameCell = row.getCell(1);
+                        employeeName = employeeNameCell.getStringCellValue();
+
+                        // Break the loop once the targetID is found (assuming the ID is unique)
+                        break;
+                    }
+                }
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return employeeName;
+    }
+
 }

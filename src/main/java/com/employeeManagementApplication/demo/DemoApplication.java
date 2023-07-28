@@ -20,7 +20,8 @@ public class DemoApplication {
                 4. Delete Employee\s
                 5. View All Employee\s
                 6. Get Employees by Department Name\s
-                7. Exist\s""");
+                7. Add Employee Attendance\s
+                8. Exist\s""");
     }
 
     public static void main(String[] args) {
@@ -58,6 +59,10 @@ public class DemoApplication {
                     employeeService.getEmployeesByDepartment();
                 }
                 case 7 -> {
+                    System.out.println("Enter Employee attendance");
+                    employeeService.addAttendance();
+                }
+                case 8 -> {
                     System.out.println("Thank you for using Application");
                     System.exit(0);
                 }
