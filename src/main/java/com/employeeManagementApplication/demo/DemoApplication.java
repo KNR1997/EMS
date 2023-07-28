@@ -21,6 +21,7 @@ public class DemoApplication {
                 5. View All Employee\s
                 6. Get Employees by Department Name\s
                 7. Add Employee Attendance\s
+                8. Show Attendance\s
                 8. Exist\s""");
     }
 
@@ -59,10 +60,14 @@ public class DemoApplication {
                     employeeService.getEmployeesByDepartment();
                 }
                 case 7 -> {
-                    System.out.println("Enter Employee attendance");
+                    System.out.println("All Employees");
                     employeeService.addAttendance();
                 }
                 case 8 -> {
+                    System.out.println("Show Attendance By Date");
+                    employeeService.showAttendanceByDate();
+                }
+                case 9 -> {
                     System.out.println("Thank you for using Application");
                     System.exit(0);
                 }

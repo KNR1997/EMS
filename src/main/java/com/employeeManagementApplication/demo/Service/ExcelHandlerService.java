@@ -479,4 +479,47 @@ public class ExcelHandlerService {
         }
         return employeesNotAdded;
     }
+
+    public void showAttendanceByDate(String date) {
+        try (FileInputStream file = new FileInputStream(filePath);
+             Workbook workbook = WorkbookFactory.create(file)) {
+
+            Sheet sheet = workbook.getSheetAt(1); // Assuming you want to read from the first sheet (index 0)
+            List<String[]> data = new ArrayList<>();
+            data.add(new String[]{"ID", "Name", "Date", "Status"});
+
+            // Iterate over all rows, starting from the second row (index 1)
+            for (int rowIndex = 1; rowIndex <= sheet.getLastRowNum(); rowIndex++) {
+                Row row = sheet.getRow(rowIndex);
+                String[] stringArray = new String[4];
+
+                if (row != null) {
+                    // Get the cell with ID (assuming it's in the first column, index 0)
+                    Cell cellID = row.getCell(3);
+
+                    // Check if the cell is not empty and its value matches the targetID
+                    if (cellID != null && cellID.getCellType() == CellType.STRING && Objects.equals(cellID.getStringCellValue(), date)) {
+                        // Get the values from the other cells in the same row (e.g., assuming you have a column for Name in index 1)
+                        Cell cell0 = row.getCell(0);
+                        Cell cell1 = row.getCell(1);
+                        Cell cell2 = row.getCell(2);
+                        Cell cell3 = row.getCell(3);
+
+
+                        stringArray[0] = Integer.toString((int) cell0.getNumericCellValue());
+                        stringArray[1] = cell1.getStringCellValue();
+                        stringArray[2] = cell2.getStringCellValue();
+                        stringArray[3] = cell3.getStringCellValue();
+
+                        data.add(stringArray);
+                    }
+                }
+            }
+            //Print the Table
+            printTableService.printTable(data);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

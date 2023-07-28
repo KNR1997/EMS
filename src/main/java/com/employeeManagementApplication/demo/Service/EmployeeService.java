@@ -99,6 +99,7 @@ public class EmployeeService {
 
         String[] status = {"Present", "Absent"};
 
+        //Get attendance 2 times for Present and Absent
         for (String state: status) {
             System.out.println("Enter the IDs of " + state + " employees: (Like: 100,101,102)");
             String input = scanner.nextLine();
@@ -107,5 +108,15 @@ public class EmployeeService {
             String[] values = input.split(",");
             excelHandlerService.addAttendance(values, state);
         }
+    }
+
+    public void showAttendanceByDate() {
+        //Get Date that user want attendance
+        System.out.println("Enter the the Date you want Attendance: (Like: 2023-07-28)");
+        String date = scanner.nextLine();
+
+        //Show Attendance By Date
+        excelHandlerService.showAttendanceByDate(date);
+        System.out.println();
     }
 }
