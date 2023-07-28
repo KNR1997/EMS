@@ -10,10 +10,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 @NoArgsConstructor
 public class ExcelHandlerService {
@@ -364,12 +361,21 @@ public class ExcelHandlerService {
             employeeIDs[i] = Integer.parseInt(values[i]);
         }
 
-        for (int employeeID: employeeIDs) {
+        // Get only the employee IDs that not entered
+        ArrayList<Integer> employeeIDsThatNotAddedArrayList = removeAlreadyAddedEmployeesForAttendance(employeeIDs, today.format(formatter));
+
+        // Convert the ArrayList to an int array
+        int[] employeeIDsThatNotAddedArray = new int[employeeIDsThatNotAddedArrayList.size()];
+        for (int i = 0; i < employeeIDsThatNotAddedArrayList.size(); i++) {
+            employeeIDsThatNotAddedArray[i] = employeeIDsThatNotAddedArrayList.get(i);
+        }
+
+        for (int employeeID: employeeIDsThatNotAddedArray) {
             String employeeName = getEmployeeNameForID(employeeID);
             stringMap.put(employeeID, employeeName);
         }
 
-        for (int employeeID: employeeIDs) {
+        for (int employeeID: employeeIDsThatNotAddedArray) {
 
             try (FileInputStream file = new FileInputStream(filePath);
                  Workbook workbook = WorkbookFactory.create(file)) {
@@ -438,4 +444,39 @@ public class ExcelHandlerService {
         return employeeName;
     }
 
+    private ArrayList<Integer> removeAlreadyAddedEmployeesForAttendance(int[] employeeIDs, String date) {
+        ArrayList<Integer> employeesNotAdded = new ArrayList<>();
+
+        try (FileInputStream file = new FileInputStream(filePath);
+             Workbook workbook = WorkbookFactory.create(file)) {
+
+            Sheet sheet = workbook.getSheetAt(1);
+            ArrayList<Integer> alreadyAddedEmployeeIDs = new ArrayList<>();
+
+            for (int rowIndex = 1; rowIndex <= sheet.getLastRowNum(); rowIndex++) {
+                Row row = sheet.getRow(rowIndex);
+                if (row != null) {
+
+                    if (Objects.equals(row.getCell(3).getStringCellValue(), date)) {
+                        Integer employeeID = (int) row.getCell(0).getNumericCellValue();
+                        alreadyAddedEmployeeIDs.add(employeeID);
+                    }
+                }
+            }
+
+            // Convert ArrayList to HashSet for efficient look-up
+            HashSet<Integer> hashSet = new HashSet<>(alreadyAddedEmployeeIDs);
+
+            // Find employee Ids not added
+            for (int element : employeeIDs) {
+                if (!hashSet.contains(element)) {
+                    employeesNotAdded.add(element);
+                }
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return employeesNotAdded;
+    }
 }
