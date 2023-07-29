@@ -119,4 +119,20 @@ public class EmployeeService {
         excelHandlerService.showAttendanceByDate(date);
         System.out.println();
     }
+
+    public void setEmployeeLeave() {
+        //Show All the employees first
+        excelHandlerService.getAllEmployees();
+
+        //Get userID who wants a leave
+        System.out.println("Enter the the UserID who wants a Leave");
+        String userID = scanner.nextLine();
+
+        //Get the Date Employee wants a Leave
+        System.out.println("Enter the Date user wants a leave: (Like: 2023-07-28)");
+        String leaveDate = scanner.nextLine();
+
+        excelHandlerService.setEmployeeLeave(userID, leaveDate);
+        System.out.println();
+    }
 }

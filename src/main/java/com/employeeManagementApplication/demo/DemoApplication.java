@@ -1,7 +1,6 @@
 package com.employeeManagementApplication.demo;
 
 import com.employeeManagementApplication.demo.Service.EmployeeService;
-import com.employeeManagementApplication.demo.Service.ExcelHandlerService;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.util.Scanner;
@@ -22,7 +21,8 @@ public class DemoApplication {
                 6. Get Employees by Department Name\s
                 7. Add Employee Attendance\s
                 8. Show Attendance\s
-                8. Exist\s""");
+                9. Set Employee Leave\s
+                10. Exist\s""");
     }
 
     public static void main(String[] args) {
@@ -68,6 +68,10 @@ public class DemoApplication {
                     employeeService.showAttendanceByDate();
                 }
                 case 9 -> {
+                    System.out.println("Set Employee Leave");
+                    employeeService.setEmployeeLeave();
+                }
+                case 10 -> {
                     System.out.println("Thank you for using Application");
                     System.exit(0);
                 }

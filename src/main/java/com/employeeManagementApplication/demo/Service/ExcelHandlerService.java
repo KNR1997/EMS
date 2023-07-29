@@ -1,7 +1,6 @@
 package com.employeeManagementApplication.demo.Service;
 
 import com.employeeManagementApplication.demo.Entity.Employee;
-import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.poi.ss.usermodel.*;
 
@@ -289,7 +288,7 @@ public class ExcelHandlerService {
             // Print the distinct values
             for (String value : distinctValues) {
                 String[] stringArray = new String[1];
-                stringArray[0]=value;
+                stringArray[0] = value;
                 data.add(stringArray);
             }
             printTableService.printTable(data);
@@ -318,7 +317,7 @@ public class ExcelHandlerService {
                 if (cell != null) {
                     String cellValue = getCellValueAsString(cell);
                     if (cellValue.equalsIgnoreCase(departmentName)) {
-                        for (int i = 0; i < row.getLastCellNum(); i++ ){
+                        for (int i = 0; i < row.getLastCellNum(); i++) {
                             stringArray[i] = getCellValueAsString(row.getCell(i));
                         }
                         data.add(stringArray);
@@ -370,12 +369,12 @@ public class ExcelHandlerService {
             employeeIDsThatNotAddedArray[i] = employeeIDsThatNotAddedArrayList.get(i);
         }
 
-        for (int employeeID: employeeIDsThatNotAddedArray) {
+        for (int employeeID : employeeIDsThatNotAddedArray) {
             String employeeName = getEmployeeNameForID(employeeID);
             stringMap.put(employeeID, employeeName);
         }
 
-        for (int employeeID: employeeIDsThatNotAddedArray) {
+        for (int employeeID : employeeIDsThatNotAddedArray) {
 
             try (FileInputStream file = new FileInputStream(filePath);
                  Workbook workbook = WorkbookFactory.create(file)) {
@@ -521,5 +520,159 @@ public class ExcelHandlerService {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void setEmployeeLeave(String userID, String leaveDate) {
+        //Get month of the leaveDate
+        String month = getMonthFromDate(leaveDate);
+
+        //Get Employee Name for ID
+        String employeeName = getEmployeeNameForID(Integer.parseInt(userID));
+
+        //Check user record created for this month
+        Boolean userRecordEnteredForThisMonth = checkUserRecordInLeaveSheetForThisMonth(userID, month);
+
+        if (!userRecordEnteredForThisMonth) {
+            try (FileInputStream file = new FileInputStream(filePath);
+                 Workbook workbook = WorkbookFactory.create(file)) {
+
+                Sheet sheet = workbook.getSheetAt(2); // Assuming you want to add to the first sheet (index 0)
+                int lastRowNum = sheet.getLastRowNum(); // Get the index of the last row in the sheet
+
+                // Create a new row at the end of the sheet
+                Row newRow = sheet.createRow(lastRowNum + 1);
+
+                // Populate the cells in the row with data for the new record
+                Cell cell0 = newRow.createCell(0);
+                cell0.setCellValue(userID);
+
+                Cell cell1 = newRow.createCell(1);
+                cell1.setCellValue(employeeName);
+
+                Cell cell2 = newRow.createCell(2);
+                cell2.setCellValue(month);
+
+                Cell cell3 = newRow.createCell(3);
+                cell3.setCellValue(leaveDate);
+
+                newRow.createCell(4);
+
+                newRow.createCell(5);
+
+                Cell cell7 = newRow.createCell(6);
+                cell7.setCellValue(2);
+
+                // Write the changes back to the Excel file
+                try (FileOutputStream fileOut = new FileOutputStream(filePath)) {
+                    workbook.write(fileOut);
+                }
+
+                System.out.println("New record added successfully!");
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            try (FileInputStream file = new FileInputStream(filePath);
+                 Workbook workbook = WorkbookFactory.create(file)) {
+
+                Sheet sheet = workbook.getSheetAt(2); // Assuming you want to add to the first sheet (index 0)
+                int rowNumber = getLeaveSheetRecordForEmployeeIdAndMonth(userID, month); // Get the already existed record for employee/Month
+
+                // Get the row from the sheet
+                Row row = sheet.getRow(rowNumber);
+
+                // Populate the cells in the row with data for the new record
+                Cell cell2 = row.getCell(4);
+                Cell cell3 = row.getCell(5);
+                Cell cell7 = row.getCell(6);
+
+                if (cell7.getNumericCellValue() == 2) {
+                    cell2.setCellValue(leaveDate);
+                    cell7.setCellValue(1);
+                } else if (cell7.getNumericCellValue() == 1) {
+                    cell3.setCellValue(leaveDate);
+                    cell7.setCellValue(0);
+                } else if ((cell7.getNumericCellValue() == 0)) {
+                    System.out.println("Cannot get any Leaves this month !!!");
+                    return;
+                }
+
+                // Write the changes back to the Excel file
+                try (FileOutputStream fileOut = new FileOutputStream(filePath)) {
+                    workbook.write(fileOut);
+                }
+
+                System.out.println("New record added successfully!");
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private int getLeaveSheetRecordForEmployeeIdAndMonth(String userID, String month) {
+        int rowNumber = 0;
+        try (FileInputStream file = new FileInputStream(filePath);
+             Workbook workbook = WorkbookFactory.create(file)) {
+
+            Sheet sheet = workbook.getSheetAt(2);
+
+            for (int rowIndex = 1; rowIndex <= sheet.getLastRowNum(); rowIndex++) {
+                Row row = sheet.getRow(rowIndex);
+                if (row != null) {
+
+                    if (Objects.equals(row.getCell(0).getStringCellValue(), userID)
+                            && Objects.equals(row.getCell(2).getStringCellValue(), month)) {
+                        rowNumber = row.getRowNum();
+                    }
+                }
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return rowNumber;
+    }
+
+    private Boolean checkUserRecordInLeaveSheetForThisMonth(String userID, String month) {
+        boolean userRecordAlreadyCreatedForThisMonth = false;
+
+        try (FileInputStream file = new FileInputStream(filePath);
+             Workbook workbook = WorkbookFactory.create(file)) {
+
+            Sheet sheet = workbook.getSheetAt(2);
+
+            for (int rowIndex = 1; rowIndex <= sheet.getLastRowNum(); rowIndex++) {
+                Row row = sheet.getRow(rowIndex);
+                if (row != null) {
+
+                    if (Objects.equals(row.getCell(0).getStringCellValue(), userID)
+                            && Objects.equals(row.getCell(2).getStringCellValue(), month)) {
+                        userRecordAlreadyCreatedForThisMonth = true;
+
+                    }
+                }
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return userRecordAlreadyCreatedForThisMonth;
+    }
+
+    private String getMonthFromDate(String date) {
+        String dateFormatPattern = "yyyy-MM-dd"; // Replace with the date format pattern of your date string
+
+        // Create a DateTimeFormatter with the given pattern
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(dateFormatPattern);
+
+        // Parse the date string into a LocalDate object
+        LocalDate Date = LocalDate.parse(date, formatter);
+
+        // Get the month from the LocalDate object
+        return Date.getMonth().name(); // Returns the month as a string (e.g., "JANUARY", "FEBRUARY", etc.)
+
     }
 }
