@@ -9,8 +9,6 @@ public class EmployeeService {
 
     ExcelHandlerService excelHandlerService = new ExcelHandlerService();
 
-    HashSet<Employee> employeeSet = new HashSet<>();
-
     Scanner scanner = new Scanner(System.in);
     boolean found = false;
 
